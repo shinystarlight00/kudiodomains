@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Availability Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .widget {
+            text-align: left;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: transparent; 
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .prefix {
+            font-size: 18px;
+            padding: 22px; /* Increased padding for height */
+            background: #eee;
+        }
+
+        input {
+            padding: 20px; /* Increased padding for height */
+            border: 0px solid #ccc;
+            flex-grow: 1;
+            min-height: 25px; /* Adjust height */
+        }
+
+        button {
+            padding: 24px 25px; /* Increased padding for height */
+            background-color: #003b44;
+            color: white;
+            border: none;
+            border-radius: 0px; 
+            cursor: pointer;
+            min-height: 21px; /* Adjust height */
+        }
+
+        button:hover {
+            background-color: #0056b3; 
+        }
+    </style>
+</head>
+<body>
+    <div class="widget">
+        <h2>Find your perfect domain</h2>
+        <div class="input-group">
+            <span class="prefix">www.</span>
+            <input type="text" id="domainInput" placeholder="Enter domain name">
+            <button id="checkButton">Explore</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('checkButton').addEventListener('click', () => {
+            const domain = document.getElementById('domainInput').value;
+            // Open a new popup window with the results
+            window.open(`http://localhost:3000/domain-availability?domain=${domain}`, 'Domain Availability', 'width=800,height=600');
+        });
+    </script>
+</body>
+</html>

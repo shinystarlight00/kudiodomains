@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Domain Availability Checker</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        height: 100vh;
+        background-color: #fff;
+      }
+
+      .widget {
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 2em;
+      }
+
+      .input-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 2em;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+
+      .prefix {
+        font-size: 1em;
+        padding: 1em;
+        background: #f0f0f0;
+        border-right: 1px solid #ccc;
+      }
+
+      input {
+        padding: 1em;
+        border: none;
+        flex-grow: 1;
+        font-size: 1em;
+        outline: none;
+      }
+
+      button {
+        padding: 1em;
+        background-color: #003b44;
+        color: white;
+        border: 0px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1em;
+      }
+
+      button:hover {
+        background-color: #003b44;
+      }
+
+      .progress-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 20px 0;
+      }
+
+      .progress-step {
+        flex: 1;
+        text-align: center;
+        position: relative;
+        font-weight: normal;
+        color: #ccc;
+      }
+
+      .progress-step.active {
+        color: #38b6ff;
+      }
+
+      .progress-step::after {
+        display: none;
+      }
+
+      .results-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 0;
+        display: block;
+      }
+
+      .domain-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1em;
+        border-bottom: 1px solid #e0e0e0;
+        transition: background-color 0.3s;
+      }
+
+      .domain-name {
+        font-size: 1em;
+        flex-grow: 2;
+      }
+
+      .status {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        text-align: right;
+        margin-right: 1em;
+      }
+
+      .available {
+        color: #38b6ff;
+        font-size: 0.8em;
+        font-weight: normal;
+      }
+      .price {
+        color: #333;
+        font-size: 0.7em; /* Make this value smaller to reduce the font size */
+        font-weight: normal;
+      }
+
+      .taken {
+        color: #ff4d4d;
+        font-size: 0.9em;
+        font-weight: normal;
+      }
+
+      .buy-button {
+        padding: 0.5em 1em;
+        background-color: transparent;
+        color: black;
+        border: 1px solid #333;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.9em;
+      }
+
+      .buy-button:hover {
+        background-color: #003b44;
+        color: white;
+      }
+
+      .form-group {
+        margin-bottom: 10px;
+      }
+
+      .form-group label {
+        display: block;
+        font-size: 0.8em;
+      }
+
+      .form-group input {
+        width: 95%;
+        padding: 1%;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .loader {
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #003b44;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+      }
+
+      .progress-step:last-child::after {
+        display: none;
+      }
+
+      .selected-domain {
+        text-align: center;
+        font-size: 1em;
+        margin-top: 5%;
+        font-weight: bold;
+        color: #003b44;
+      }
+
+      .confirmation-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 2%;
+        display: none;
+      }
+
+      .confirmation-box {
+        border: 1px solid #ccc;
+        padding: 3%;
+        margin-bottom: 1%;
+      }
+
+      .confirmation-button {
+        padding: 10px 20px;
+        background-color: #003b44;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .confirmation-button:hover {
+        background-color: #0056b3;
+      }
+
+      .stripe-input {
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: calc(100% - 22px);
+      }
+
+      .inner-status {
+        display: flex;
+      }
+
+      .text-center {
+        text-align: center;
+      }
+
+      .email-hosting {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 4% 3%;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .email-hosting-element {
+        background-color: white;
+        font-size: 0.9em;
+        width: 25%;
+        margin: auto;
+        padding: 3%;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+      }
+
+      @media (max-width: 820px) {
+        .email-hosting-element {
+          flex-basis: 100%;
+          margin: 3%;
+          padding: 5%;
+        }
+      }
+
+      @media (max-width: 500px) {
+        .domain-row {
+          display: block;
+        }
+
+        .inner-status {
+          display: flex;
+          justify-content: space-between;
+        }
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+    <script src="https://js.stripe.com/v3/"></script>
+  </head>
+  <body>
+    <div class="widget">
+      <h2>Find Your Perfect Domain</h2>
+      <div class="input-group">
+        <span class="prefix">www.</span>
+        <input type="text" id="domainInput" placeholder="Enter domain name" />
+        <button id="checkButton">Explore</button>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-bar" id="progressBar">
+        <div class="progress-step" id="progressDomain">Domain</div>
+        <div class="progress-step" id="progressRegister">Register</div>
+        <div class="progress-step" id="progressEmail">Email</div>
+        <div class="progress-step" id="progressConfirm">Confirm</div>
+      </div>
+
+      <!-- Selected Domain Display -->
+<div id="selectedDomain" class="selected-domain hidden" style="font-size: 0.7em; font-weight: normal; background-color: #e6f7ff; border-radius: 10px; padding: 10px;">Chosen Domain: </div>    
+</div>
+
+    <!-- Loader -->
+    <div id="loader" class="loader hidden"></div>
+
+    <!-- Search Results and Registrant Form Container -->
+    <div class="results-container" id="resultsContainer">
+    </div>
+
+    <!-- Registrant Form -->
+    <div id="registrantForm" class="results-container hidden">
+  <h3 class="text-center">Register</h3>
+  <div class="registrant-form-container">
+    <input type="text" id="firstName" placeholder="First Name" required style="padding: 3%; border: 1px solid #ccc; border-radius: 4px;" />
+    <input type="text" id="lastName" placeholder="Last Name" required style="padding: 3%; border: 1px solid #ccc; border-radius: 4px;" />
+    <input type="text" id="address" placeholder="Address" required style="padding: 3%; border: 1px solid #ccc; border-radius: 4px;" />
+    <input type="text" id="city" placeholder="City" required style="padding: 3%; border: 1px solid #ccc; border-radius: 4px;" />
+    <input type="text" id="country" placeholder="Country" value="GB" disabled required style="padding: 3%; border: 1px solid #ccc; border-radius: 4px;" />
+    <input type="text" id="state" placeholder="State" required style="padding: 3%; border: 1px solid #ccc; border-radius: 4px;" />
+    <input type="text" id="postCode" placeholder="Post Code" required style="padding: 3%; border: 1px solid #ccc; border-radius: 4px;" />
+    <input type="hidden" id="countryCode" value="44" />
+    <input type="text" id="phone" placeholder="Phone Number" required style="padding: 3%; border: 1px solid #ccc; border-radius: 4px;" />
+    <input type="email" id="email" placeholder="Email" required style="padding: 3%; border: 1px solid #ccc; border-radius: 4px;" />
+    <input type="text" id="accountType" value="personal" placeholder="Account Type" disabled required style="padding: 3%; border: 1px solid #ccc; border-radius: 4px;" />
+  </div>
+  <button id="submitRegistrantButton" onclick="submitRegisterForm()" style="margin-top: 20px; padding: 10px 20px; border: 1px solid #003b44; background-color: #003b44; color: white; border-radius: 4px; cursor: pointer;">Create</button>
+</div>
+
+<style>
+  @media (min-width: 769px) {
+    .registrant-form-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .registrant-form-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    #registrantForm input {
+      width: 100%;
+      padding: 5px; /* Reduce padding for mobile view */
+    }
+  }
+
+  #registrantForm input {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+</style>
+
+    <!-- EmailHosting Container -->
+
+    <div id="emailContainer" class="confirmation-container">
+      <h3 class="text-center" style="margin-bottom: 0%">Add Business Emails</h3>
+      <p style="padding: 1%">
+      </p>
+      <div class="email-hosting">
+        <label class="email-hosting-element">
+          <div>
+            <h4>Basic</h4>
+            <p style="margin: 2% 0%">1 Account</p>
+            <p style="margin: 2% 0%">2GB Storage</p>
+            <p style="margin: 2% 0%">25Mb Attachment</p>
+            <div style="display: flex; margin-top: 10%">
+              <div>
+                <input
+                  type="checkbox"
+                  id="basicEmail"
+                  style="transform: scale(1.5); margin-right: 10px"
+                />
+              </div>
+              <div>
+                <p style="color: #38b6ff; margin: 0; font-weight: bold">
+                  £19.20<span style="font-size: 0.8em; color: black">
+                    /per year</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </label>
+        <label class="email-hosting-element">
+          <div>
+            <h4>Standard</h4>
+            <p style="margin: 2% 0%">10 Accounts</p>
+            <p style="margin: 2% 0%">2GB Storage</p>
+            <p style="margin: 2% 0%">25Mb Attachment</p>
+            <div style="display: flex; margin-top: 10%">
+              <div>
+                <input
+                  type="checkbox"
+                  id="standardEmail"
+                  style="transform: scale(1.5); margin-right: 10px"
+                />
+              </div>
+              <div>
+                <p style="color: #38b6ff; margin: 0; font-weight: bold">
+                  £43.20<span style="font-size: 0.8em; color: black">
+                    /per year</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </label>
+        <label class="email-hosting-element">
+          <div>
+            <h4>Business</h4>
+            <p style="margin: 2% 0%">Unlimited Accounts</p>
+            <p style="margin: 2% 0%">2GB Storage</p>
+            <p style="margin: 2% 0%">25Mb Attachment</p>
+            <div style="display: flex; margin-top: 10%">
+              <div>
+                <input
+                  type="checkbox"
+                  id="businessEmail"
+                  style="transform: scale(1.5); margin-right: 10px"
+                />
+              </div>
+              <div>
+                <p style="color: #38b6ff; margin: 0; font-weight: bold">
+                  £69.99<span style="font-size: 0.8em; color: black">
+                    /per year</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </label>
+      </div>
+      <button onclick="showConfirmation()">Skip/Continue</button>
+    </div>
+
+    <!-- Confirmation Container -->
+    <div id="confirmationContainer" class="confirmation-container">
+      <h3>Confirmation</h3>
+      <div class="confirmation-box" id="domainConfirmation">
+        <strong>Domain Confirmation</strong><br />
+        Domain: www.' + selectedDomainName + '<br />Price: £' +
+        selectedDomainPrice + ' Per Year<br />
+        Auto Renew
+      </div>
+      <div class="confirmation-box" id="accountCreated">
+        <strong>Account Created</strong><br />
+        Customer ID: M12097302<br />
+        Username: Smith9876<br />
+        Name: Sample Smith
+      </div>
+
+      <div class="confirmation-box">
+        <p style="margin-bottom: 0%">
+          Domain: www.<span id="selectedDomainNameConfirmation"></span>
+        </p>
+        <p style="margin-top: 0%">
+          Email Hosting: <span id="selectedEmailHosting"></span>
+        </p>
+        <p id="totalPriceElement" style="font-weight: bold">
+          Total: £<span id="totalPrice"></span> Per Year
+        </p>
+      </div>
+
+      <div id="paymentForm" class="form-container">
+        <h3>Payment Information</h3>
+        <div class="form-info" id="selectedDomainInfo"></div>
+        <div class="form-info" id="selectedEmailPackageInfo"></div>
+        <div class="thin-line"></div>
+        <!-- Grey line -->
+        <div class="total-payment" id="totalPaymentInfo"></div>
+        <div class="thin-line"></div>
+        <!-- Grey line -->
+
+        <form id="stripePaymentForm">
+          <div class="form-group">
+            <label for="cardHolderName">Card Holder Name</label>
+            <input
+              type="text"
+              id="cardHolderName"
+              class="stripe-input"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="card-element">Card Information</label>
+            <div id="card-element" class="stripe-input"></div>
+          </div>
+          <button type="submit">Pay & Register Domain</button>
+          <div id="card-errors" role="alert"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Success Notification -->
+    <div id="successNotification" class="confirmation-container text-center">
+      <h1>Confirmation</h1>
+      <p style="margin-top: 20px; margin-bottom: 20px">Thank you!</p>
+      <p>Your Domain has been registered successfully!</p>
+      <p>Please check your email account to access domain settins.</p>
+    </div>
+
+    <script>
+      const basicEmailCheckbox = document.getElementById("basicEmail");
+      const standardEmailCheckbox = document.getElementById("standardEmail");
+      const businessEmailCheckbox = document.getElementById("businessEmail");
+
+      const selectedEmailHosting = document.getElementById(
+        "selectedEmailHosting"
+      );
+      let selectedEmailPrice = 0;
+      let selectedEmailPlan = 0;
+
+      let first_name = "";
+      let last_name = "";
+      let username = "";
+
+      basicEmailCheckbox.addEventListener("change", function () {
+        if (this.checked) {
+          standardEmailCheckbox.checked = false;
+          businessEmailCheckbox.checked = false;
+          selectedEmailHosting.textContent = "Basic";
+          selectedEmailPrice = 19.2;
+          selectedEmailPlan = 47;
+          document.getElementById("totalPrice").innerText = (
+            parseFloat(selectedDomainPrice) + parseFloat(selectedEmailPrice)
+          ).toFixed(2);
+        } else {
+          selectedEmailHosting.textContent = "";
+          selectedEmailPlan = 0;
+          selectedEmailPrice = 0;
+          document.getElementById("totalPrice").innerText = (
+            parseFloat(selectedDomainPrice) + parseFloat(selectedEmailPrice)
+          ).toFixed(2);
+        }
+      });
+
+      standardEmailCheckbox.addEventListener("change", function () {
+        if (this.checked) {
+          basicEmailCheckbox.checked = false;
+          businessEmailCheckbox.checked = false;
+          selectedEmailHosting.textContent = "Standard";
+          selectedEmailPrice = 43.2;
+          selectedEmailPlan = 48;
+          document.getElementById("totalPrice").innerText = (
+            parseFloat(selectedDomainPrice) + parseFloat(selectedEmailPrice)
+          ).toFixed(2);
+        } else {
+          selectedEmailHosting.textContent = "";
+          selectedEmailPlan = 0;
+          selectedEmailPrice = 0;
+          document.getElementById("totalPrice").innerText = (
+            parseFloat(selectedDomainPrice) + parseFloat(selectedEmailPrice)
+          ).toFixed(2);
+        }
+      });
+
+      businessEmailCheckbox.addEventListener("change", function () {
+        if (this.checked) {
+          basicEmailCheckbox.checked = false;
+          standardEmailCheckbox.checked = false;
+          selectedEmailHosting.textContent = "Business";
+          selectedEmailPrice = 69.99;
+          selectedEmailPlan = 49;
+          document.getElementById("totalPrice").innerText = (
+            parseFloat(selectedDomainPrice) + parseFloat(selectedEmailPrice)
+          ).toFixed(2);
+        } else {
+          selectedEmailHosting.textContent = "";
+          selectedEmailPrice = 0;
+          selectedEmailPlan = 0;
+          document.getElementById("totalPrice").innerText = (
+            parseFloat(selectedDomainPrice) + parseFloat(selectedEmailPrice)
+          ).toFixed(2);
+        }
+      });
+      const stripePublicKey = "<%= stripePublicKey %>";
+      const stripe = Stripe(stripePublicKey);
+      console.log("===============> stripe public key", stripePublicKey);
+
+      const elements = stripe.elements();
+      const cardElement = elements.create("card");
+      cardElement.mount("#card-element");
+
+      let customerID = 0,
+        registrantID = 0;
+
+      function validateForm() {
+        const requiredFields = [
+          "firstName",
+          "lastName",
+          "address",
+          "city",
+          "state",
+          "postCode",
+          "country",
+          "countryCode",
+          "phone",
+          "email",
+        ];
+
+        let isValid = true;
+        requiredFields.forEach((fieldId) => {
+          const field = document.getElementById(fieldId);
+          if (!field.value.trim()) {
+            isValid = false;
+            field.classList.add("error"); // Optionally add a class to highlight the error
+          } else {
+            field.classList.remove("error");
+          }
+        });
+
+        return isValid;
+      }
+
+      function showLoader() {
+        const loader = document.getElementById("loader");
+        loader.classList.remove("hidden");
+      }
+
+      function hideLoader() {
+        const loader = document.getElementById("loader");
+        loader.classList.add("hidden");
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        document
+          .getElementById("checkButton")
+          .addEventListener("click", async () => {
+            setProgressBarStep("Domain");
+            const domain = document
+              .getElementById("domainInput")
+              .value.trim()
+              .toLowerCase();
+            const resultsContainer =
+              document.getElementById("resultsContainer");
+
+            if (!domain) {
+              resultsContainer.innerHTML =
+                "<h3 class='text-center'>Search Results</h3><p>Please enter a domain name.</p>";
+              resultsContainer.style.display = "block";
+              return;
+            }
+
+            // Clear previous results
+            resultsContainer.style.display = "none";
+            resultsContainer.innerHTML =
+              "<h3 class='text-center'>Search Results</h3>";
+
+            // Show loader
+            showLoader();
+
+            try {
+              console.log("Sending request to check domain availability...");
+              const response = await fetch(
+                `/domain-availability?domain=${encodeURIComponent(domain)}`
+              );
+
+              console.log("Response received:", response);
+
+              if (!response.ok) {
+                console.error("Response status not ok:", response.status);
+                throw new Error("Network response was not ok");
+              }
+
+              const data = await response.json();
+              console.log("Response data:", data);
+
+              // Hide loader
+              hideLoader();
+
+              if (data.error) {
+                resultsContainer.innerHTML += `<p>${data.error}</p>`;
+                resultsContainer.style.display = "block";
+                return;
+              }
+
+              if (!data.data || data.data.length === 0) {
+                resultsContainer.innerHTML +=
+                  "<p>No domains available or invalid domain name.</p>";
+                resultsContainer.style.display = "block";
+                return;
+              }
+
+              // Display results container
+              resultsContainer.style.display = "block";
+
+              // Display the domain results
+              data.data.forEach((domainItem) => {
+                const vat = (domainItem.register_price * 20) / 100;
+                const priceWithTax = domainItem.register_price + vat;
+                const finalPrice = ((priceWithTax * 280) / 100).toFixed(2);
+
+                const domainRow = document.createElement("div");
+                domainRow.classList.add("domain-row");
+                domainRow.id = `domainRow-${domainItem.domain_name}`;
+
+                const domainNameDiv = document.createElement("div");
+                domainNameDiv.classList.add("domain-name");
+                domainNameDiv.innerHTML = `www.${domainItem.domain_name}`;
+                domainRow.appendChild(domainNameDiv);
+
+                const statusDiv = document.createElement("div");
+                statusDiv.classList.add("status");
+
+                if (domainItem.is_available) {
+                  statusDiv.innerHTML = `
+                                  <div class="available">Available</div>
+                                  <div class="price">&pound;${finalPrice} / Per Year</div>
+                              `;
+                  const buyButton = document.createElement("button");
+                  buyButton.classList.add("buy-button");
+                  buyButton.innerHTML = "Register";
+                  buyButton.onclick = () => {
+                    showRegistrantForm(domainItem.domain_name, finalPrice);
+                    displaySelectedDomain(domainItem.domain_name);
+                  };
+
+                  const innerStatusDiv = document.createElement("div");
+                  innerStatusDiv.classList.add("inner-status");
+                  innerStatusDiv.appendChild(statusDiv);
+                  innerStatusDiv.appendChild(buyButton);
+
+                  domainRow.appendChild(innerStatusDiv);
+                } else {
+                  statusDiv.innerHTML = `<div class="taken">Taken</div>`;
+                  domainRow.appendChild(statusDiv);
+                }
+
+                resultsContainer.appendChild(domainRow);
+              });
+            } catch (error) {
+              console.error("Error fetching domain availability:", error);
+              resultsContainer.innerHTML += `<p>Error fetching domain availability: ${error.message}</p>`;
+              resultsContainer.style.display = "block";
+
+              // Hide loader
+              loader.classList.add("hidden");
+            }
+          });
+
+        window.showRegistrantForm = function (domainName, domainPrice) {
+          selectedDomainName = domainName;
+          selectedDomainPrice = domainPrice;
+          setProgressBarStep("Register");
+          console.log("Showing registrant form for domain:", domainName);
+
+          hideContainer("resultsContainer");
+
+          showContainer("registrantForm");
+        };
+
+        window.submitLoginForm = function () {
+          console.log("Submitting login form...");
+          const formData = new FormData();
+          formData.append(
+            "username",
+            document.getElementById("login-username").value
+          );
+          formData.append(
+            "password",
+            document.getElementById("login-password").value
+          );
+        };
+
+        window.submitRegisterForm = async function () {
+          if (!validateForm()) {
+            alert("Please fill in all required fields.");
+            return;
+          } else {
+            console.log("Submitting registrant form...");
+
+            // const username = document.getElementById("username").value;
+            // const password = document.getElementById("password").value;
+
+            const first_name = document.getElementById("firstName").value;
+            const last_name = document.getElementById("lastName").value;
+            const address = document.getElementById("address").value;
+            const city = document.getElementById("city").value;
+            const state = document.getElementById("state").value;
+
+            const post_code = document.getElementById("postCode").value;
+            const country = document.getElementById("country").value;
+            const country_code = parseInt(
+              document.getElementById("countryCode").value
+            );
+
+            const phone = document.getElementById("phone").value;
+            const email = document.getElementById("email").value;
+
+            const account_type = document.getElementById("accountType").value;
+            // const business_name = document.getElementById("businessName").value;
+            // const business_number_type =
+            //   document.getElementById("businessNumberType").value;
+            // const business_number =
+            //   document.getElementById("businessNumber").value;
+
+            const data = {
+              first_name,
+              last_name,
+              address,
+              city,
+              state,
+              post_code,
+              country,
+              country_code,
+              phone,
+              email,
+              account_type,
+            };
+
+            await fetch("/registrant", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            })
+              .then((response) => {
+                result = response.json();
+                if (!response.ok) {
+                  return;
+                }
+                return result;
+              })
+              .then((result) => {
+                if (result.status) {
+                  customerID = result.customer;
+                  username =
+                    first_name +
+                    last_name +
+                    Math.floor(1000 + Math.random() * 9000).toString();
+
+                  showEmailHosting();
+                } else {
+                  for (const key in result.error) {
+                    alert("Failed to register customer: " + result.error[key]);
+                  }
+                }
+              });
+          }
+        };
+
+        function setProgressBarStep(step) {
+          const steps = ["Domain", "Register", "Email", "Confirm"];
+          steps.forEach(function (currentStep) {
+            const element = document.getElementById(`progress${currentStep}`);
+            if (currentStep === step) {
+              element.classList.add("active");
+            } else {
+              element.classList.remove("active");
+            }
+          });
+        }
+
+        function displaySelectedDomain(domainName) {
+          let selectedDomainName = "";
+          let selectedDomainPrice = "";
+          const selectedDomainDiv = document.getElementById("selectedDomain");
+          selectedDomainDiv.textContent = `Selected Domain: www.${domainName}`;
+          selectedDomainDiv.classList.remove("hidden");
+        }
+
+        function showEmailHosting() {
+          setProgressBarStep("Email");
+          hideContainer("registrantForm");
+
+          showContainer("emailContainer");
+        }
+
+        window.showConfirmation = function () {
+          setProgressBarStep("Confirm");
+          hideContainer("emailContainer");
+
+          showContainer("confirmationContainer");
+
+          // Set confirmation details
+          document.getElementById("domainConfirmation").innerHTML = `
+          <strong>Domain Confirmation</strong><br>
+          Domain: www.${selectedDomainName}<br>
+          Price: £${selectedDomainPrice} Per Year<br>
+          Auto Renew`;
+          document.getElementById("accountCreated").innerHTML = `
+          <strong>Account Created</strong><br>
+          Customer ID: ${customerID}<br>
+          Username: ${username}<br>
+          Name: ${document.getElementById("firstName").value} ${
+            document.getElementById("lastName").value
+          }`;
+          document.getElementById("selectedDomainNameConfirmation").innerText =
+            selectedDomainName;
+          document.getElementById("totalPrice").innerText = (
+            parseFloat(selectedEmailPrice) + parseFloat(selectedDomainPrice)
+          ).toFixed(2);
+          console.log("seleted email price type: ", typeof selectedEmailPrice);
+          console.log(
+            "seleted domain price type: ",
+            typeof selectedDomainPrice
+          );
+        };
+
+        document
+          .getElementById("stripePaymentForm")
+          .addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            showLoader();
+
+            const { paymentMethod, error } = await stripe.createPaymentMethod({
+              type: "card",
+              card: cardElement,
+              billing_details: {
+                name: document.getElementById("cardHolderName").value,
+              },
+            });
+
+            if (error) {
+              hideLoader();
+              console.error("Error creating payment method:", error);
+              alert("Error creating payment method:", error.message);
+              document.getElementById("card-errors").innerText = error.message;
+              return;
+            } else {
+              const totalPrice = parseInt(
+                ((parseFloat(selectedDomainPrice) || 0) +
+                  (parseFloat(selectedEmailPrice) || 0)) *
+                  100
+              );
+              console.log("totalprice stripe ===============>", totalPrice);
+
+              const response = await fetch(`/create-payment-intent`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  paymentMethodId: paymentMethod.id,
+                  price: totalPrice,
+                }),
+              });
+
+              const { clientSecret, error } = await response.json();
+              console.log("received client secret:", clientSecret);
+
+              if (error) {
+                hideLoader();
+                alert("Error creating payment intent");
+                return;
+              } else {
+                const { error, paymentIntent } =
+                  await stripe.confirmCardPayment(clientSecret, {
+                    payment_method: {
+                      card: cardElement,
+                      billing_details: {
+                        name: document.getElementById("cardHolderName").value,
+                      },
+                    },
+                  });
+
+                if (error) {
+                  hideLoader();
+                  alert("Payment failed.", error.message);
+                  return;
+                } else if (paymentIntent.status === "succeeded") {
+                  hideLoader();
+                  console.log("Payment succeeded!\n", paymentIntent);
+
+                  const response = await fetch(`/register-domain`, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      domain: selectedDomainName,
+                      customer_id: customerID,
+                      plan_id: selectedEmailPlan,
+                    }),
+                  });
+
+                  const { registerStatus, error } = response.json();
+                  if (registerStatus) {
+                    showSuccessNotification();
+                  } else {
+                    hideContainer("confirmationContainer");
+                    alert("Domain registration failed: ", error);
+                  }
+                }
+              }
+
+              // const response_data = await response.json();
+              // console.log("===============>response data:", response_data);
+
+              // console.log(
+              //   "===============> domain register result ",
+              //   response_data.domainData.status
+              // );
+
+              // if (response_data.domainData.status) {
+              //   hideLoader();
+              //   showSuccessNotification();
+              // } else {
+              //   hideLoader();
+              //   alert(
+              //     "Domain registration failed! " +
+              //       response_data.domainData.error_message
+              //   );
+
+              //   showContainer("confirmationContainer");
+              // }
+
+              // } else {
+              //   alert(
+              //     "Domain registration failed!" +
+              //       response_data.domainData.error_message
+              //   );
+              // }
+            }
+          });
+
+        function showSuccessNotification() {
+          hideContainer("confirmationContainer");
+
+          showContainer("successNotification");
+        }
+
+        function showContainer(id) {
+          const container = document.getElementById(id);
+          container.style.display = "block";
+          successNotification.scrollIntoView({ behavior: "smooth" });
+        }
+
+        function hideContainer(id) {
+          const container = document.getElementById(id);
+          container.style.display = "none";
+        }
+      });
+    </script>
+  </body>
+</html>
