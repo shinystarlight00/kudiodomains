@@ -88,12 +88,12 @@
       }
 
       .domain-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1em;
-        border-bottom: 1px solid #e0e0e0;
-        transition: background-color 0.3s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    padding: 1em;
+    border-bottom: 1px solid #e0e0e0;
       }
 
       .domain-name {
@@ -102,11 +102,10 @@
       }
 
       .status {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        text-align: right;
-        margin-right: 1em;
+    flex: 1;
+    text-align: right;
+    margin-right: 0.5em;
+
       }
 
       .available {
@@ -151,7 +150,7 @@
       }
 
       .form-group input {
-        width: 95%;
+        width: 100%;
         padding: 1%;
         border: 1px solid #ccc;
         border-radius: 4px;
@@ -322,33 +321,36 @@
 </div>
 
 <style>
-  @media (min-width: 769px) {
-    .registrant-form-container {
-      display: grid;
-  width: 90%; /* Adjust to fit within the screen size */
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
+ 
+@media (min-width: 769px) {
+  .registrant-form-container {
+    display: grid;
+    width: 100%; /* Set width to 100% for better container fit */ /* Adjust to fit within the screen size */
+    grid-template-columns: 1fr 1fr; align-items: start;
+    gap: 10px; /* Further reduced to minimize the space between columns */ /* Reduced to minimize the space between columns */ /* Reduced to prevent a large gap between columns */
   }
+}
 
-  @media (max-width: 768px) {
-    .registrant-form-container {
-      display: grid;
-  width: 90%; /* Adjust to fit within the screen size */
-      grid-template-columns: 1fr;
-      gap: 10px;
-    }
-    #registrantForm input {
-      width: 100%;
-      padding: 5px; /* Reduce padding for mobile view */
-    }
+@media (max-width: 768px) {
+  .registrant-form-container {
+    display: flex;
+    flex-direction: column;
+    width: 95%; /* Adjust to fit within the screen size */
+    gap: 10px; /* Reduced gap for mobile view to minimize spacing */
   }
-
   #registrantForm input {
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    width: 100%;
+    padding: 5px; /* Reduce padding for mobile view */
   }
+}
+
+#registrantForm input {
+  width: 90%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
 </style>
 
     <!-- EmailHosting Container -->
