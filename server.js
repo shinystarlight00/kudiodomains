@@ -349,14 +349,17 @@ async function registerDomain(domain, customerId, plan_id) {
     console.log("============> domainData API Response:", domainData); // Log API response for debugging
 
     if (domainData.status && plan_id) {
+      const new_requestId = generateRequestID();
+      const new_signature = generateSignature(requestId, apiKey);
+
       try {
         const emailHostingResponse = await fetch(emailHostingUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             accept: "application/json",
-            "Api-Request-Id": requestId,
-            "Api-Signature": signature,
+            "Api-Request-Id": new_requestId,
+            "Api-Signature": new_signature,
           },
           body: JSON.stringify({
             domain_name: domain,

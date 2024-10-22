@@ -12,12 +12,12 @@
       }
 
       .widget {
-  text-align: center;
-  max-width: 600px;
-  width: 90%; /* Adjust to fit within the screen size */
-  margin: 0 auto;
-  padding: 0;
-}
+        text-align: center;
+        max-width: 600px;
+        width: 90%; /* Adjust to fit within the screen size */
+        margin: 0 auto;
+        padding: 0;
+      }
       .input-group {
         display: flex;
         align-items: center;
@@ -88,12 +88,12 @@
       }
 
       .domain-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-direction: row;
-    padding: 1em;
-    border-bottom: 1px solid #e0e0e0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-direction: row;
+        padding: 1em;
+        border-bottom: 1px solid #e0e0e0;
       }
 
       .domain-name {
@@ -102,10 +102,9 @@
       }
 
       .status {
-    flex: 1;
-    text-align: right;
-    margin-right: 0.5em;
-
+        flex: 1;
+        text-align: right;
+        margin-right: 0.5em;
       }
 
       .available {
@@ -291,74 +290,161 @@
       </div>
 
       <!-- Selected Domain Display -->
-<div id="selectedDomain" class="selected-domain hidden" style="font-size: 0.7em; font-weight: normal; background-color: #e6f7ff; border-radius: 10px; padding: 10px;">Chosen Domain: </div>    
-</div>
+      <div
+        id="selectedDomain"
+        class="selected-domain hidden"
+        style="
+          font-size: 0.7em;
+          font-weight: normal;
+          background-color: #e6f7ff;
+          border-radius: 10px;
+          padding: 10px;
+        "
+      >
+        Chosen Domain:
+      </div>
+    </div>
 
     <!-- Loader -->
     <div id="loader" class="loader hidden"></div>
 
     <!-- Search Results and Registrant Form Container -->
-    <div class="results-container" id="resultsContainer">
-    </div>
+    <div class="results-container" id="resultsContainer"></div>
 
     <!-- Registrant Form -->
     <div id="registrantForm" class="results-container hidden">
-  <h3 class="text-center">Register</h3>
-  <div class="registrant-form-container">
-    <input type="text" id="firstName" placeholder="First Name" required style="padding: 3%; border: 1px solid #ccc; border-radius: 4px;" />
-    <input type="text" id="lastName" placeholder="Last Name" required style="padding: 3%; border: 1px solid #ccc; border-radius: 4px;" />
-    <input type="text" id="address" placeholder="Address" required style="padding: 3%; border: 1px solid #ccc; border-radius: 4px;" />
-    <input type="text" id="city" placeholder="City" required style="padding: 3%; border: 1px solid #ccc; border-radius: 4px;" />
-    <input type="text" id="country" placeholder="Country" value="GB" disabled required style="padding: 3%; border: 1px solid #ccc; border-radius: 4px;" />
-    <input type="text" id="state" placeholder="State" required style="padding: 3%; border: 1px solid #ccc; border-radius: 4px;" />
-    <input type="text" id="postCode" placeholder="Post Code" required style="padding: 3%; border: 1px solid #ccc; border-radius: 4px;" />
-    <input type="hidden" id="countryCode" value="44" />
-    <input type="text" id="phone" placeholder="Phone Number" required style="padding: 3%; border: 1px solid #ccc; border-radius: 4px;" />
-    <input type="email" id="email" placeholder="Email" required style="padding: 3%; border: 1px solid #ccc; border-radius: 4px;" />
-    <input type="text" id="accountType" value="personal" placeholder="Account Type" disabled required style="padding: 3%; border: 1px solid #ccc; border-radius: 4px;" />
-  </div>
-  <button id="submitRegistrantButton" onclick="submitRegisterForm()" style="margin-top: 20px; padding: 10px 20px; border: 1px solid #003b44; background-color: #003b44; color: white; border-radius: 4px; cursor: pointer;">Create</button>
-</div>
+      <h3 class="text-center">Register</h3>
+      <div class="registrant-form-container">
+        <input
+          type="text"
+          id="firstName"
+          placeholder="First Name"
+          required
+          style="padding: 3%; border: 1px solid #ccc; border-radius: 4px"
+        />
+        <input
+          type="text"
+          id="lastName"
+          placeholder="Last Name"
+          required
+          style="padding: 3%; border: 1px solid #ccc; border-radius: 4px"
+        />
+        <input
+          type="text"
+          id="address"
+          placeholder="Address"
+          required
+          style="padding: 3%; border: 1px solid #ccc; border-radius: 4px"
+        />
+        <input
+          type="text"
+          id="city"
+          placeholder="City"
+          required
+          style="padding: 3%; border: 1px solid #ccc; border-radius: 4px"
+        />
+        <input
+          type="text"
+          id="country"
+          placeholder="Country"
+          value="GB"
+          disabled
+          required
+          style="padding: 3%; border: 1px solid #ccc; border-radius: 4px"
+        />
+        <input
+          type="text"
+          id="state"
+          placeholder="State"
+          required
+          style="padding: 3%; border: 1px solid #ccc; border-radius: 4px"
+        />
+        <input
+          type="text"
+          id="postCode"
+          placeholder="Post Code"
+          required
+          style="padding: 3%; border: 1px solid #ccc; border-radius: 4px"
+        />
+        <input type="hidden" id="countryCode" value="44" />
+        <input
+          type="text"
+          id="phone"
+          placeholder="Phone Number"
+          required
+          style="padding: 3%; border: 1px solid #ccc; border-radius: 4px"
+        />
+        <input
+          type="email"
+          id="email"
+          placeholder="Email"
+          required
+          style="padding: 3%; border: 1px solid #ccc; border-radius: 4px"
+        />
+        <input
+          type="text"
+          id="accountType"
+          value="personal"
+          placeholder="Account Type"
+          disabled
+          required
+          style="padding: 3%; border: 1px solid #ccc; border-radius: 4px"
+        />
+      </div>
+      <button
+        id="submitRegistrantButton"
+        onclick="submitRegisterForm()"
+        style="
+          margin-top: 20px;
+          padding: 10px 20px;
+          border: 1px solid #003b44;
+          background-color: #003b44;
+          color: white;
+          border-radius: 4px;
+          cursor: pointer;
+        "
+      >
+        Create
+      </button>
+    </div>
 
-<style>
- 
-@media (min-width: 769px) {
-  .registrant-form-container {
-    display: grid;
-    width: 100%; /* Set width to 100% for better container fit */ /* Adjust to fit within the screen size */
-    grid-template-columns: 1fr 1fr; align-items: start;
-    gap: 10px; /* Further reduced to minimize the space between columns */ /* Reduced to minimize the space between columns */ /* Reduced to prevent a large gap between columns */
-  }
-}
+    <style>
+      @media (min-width: 769px) {
+        .registrant-form-container {
+          display: grid;
+          width: 100%; /* Set width to 100% for better container fit */ /* Adjust to fit within the screen size */
+          grid-template-columns: 1fr 1fr;
+          align-items: start;
+          gap: 10px; /* Further reduced to minimize the space between columns */ /* Reduced to minimize the space between columns */ /* Reduced to prevent a large gap between columns */
+        }
+      }
 
-@media (max-width: 768px) {
-  .registrant-form-container {
-    display: flex;
-    flex-direction: column;
-    width: 95%; /* Adjust to fit within the screen size */
-    gap: 10px; /* Reduced gap for mobile view to minimize spacing */
-  }
-  #registrantForm input {
-    width: 100%;
-    padding: 5px; /* Reduce padding for mobile view */
-  }
-}
+      @media (max-width: 768px) {
+        .registrant-form-container {
+          display: flex;
+          flex-direction: column;
+          width: 95%; /* Adjust to fit within the screen size */
+          gap: 10px; /* Reduced gap for mobile view to minimize spacing */
+        }
+        #registrantForm input {
+          width: 100% !important;
+          padding: 5px; /* Reduce padding for mobile view */
+        }
+      }
 
-#registrantForm input {
-  width: 90%;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-</style>
+      #registrantForm input {
+        width: 90%;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+    </style>
 
     <!-- EmailHosting Container -->
 
     <div id="emailContainer" class="confirmation-container">
       <h3 class="text-center" style="margin-bottom: 0%">Add Business Emails</h3>
-      <p style="padding: 1%">
-      </p>
+      <p style="padding: 1%"></p>
       <div class="email-hosting">
         <label class="email-hosting-element">
           <div>
@@ -982,40 +1068,14 @@
                   const { registerStatus, error } = response.json();
                   if (registerStatus) {
                     showSuccessNotification();
+                    hideLoader();
                   } else {
                     hideContainer("confirmationContainer");
+                    hideLoader();
                     alert("Domain registration failed: ", error);
                   }
                 }
               }
-
-              // const response_data = await response.json();
-              // console.log("===============>response data:", response_data);
-
-              // console.log(
-              //   "===============> domain register result ",
-              //   response_data.domainData.status
-              // );
-
-              // if (response_data.domainData.status) {
-              //   hideLoader();
-              //   showSuccessNotification();
-              // } else {
-              //   hideLoader();
-              //   alert(
-              //     "Domain registration failed! " +
-              //       response_data.domainData.error_message
-              //   );
-
-              //   showContainer("confirmationContainer");
-              // }
-
-              // } else {
-              //   alert(
-              //     "Domain registration failed!" +
-              //       response_data.domainData.error_message
-              //   );
-              // }
             }
           });
 
