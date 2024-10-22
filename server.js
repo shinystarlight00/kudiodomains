@@ -100,18 +100,11 @@ app.get("/domain-availability", async (req, res) => {
 
 // Payment endpoint (as per your setup)
 app.post("/create-payment-intent", async (req, res) => {
-  // const { amount } = req.query;
   const { paymentMethodId, price } = req.body;
 
   console.log("=================> create payment intent ", req.body);
 
-  // if (!amount || !paymentMethodId || !domain || !registrant) {
-  //   return res.status(400).json({ error: "Missing required fields" });
-  // }
-
   try {
-    // const totalAmount = parseInt(amount);
-
     const paymentIntent = await stripe.paymentIntents.create({
       amount: price,
       currency: "gbp",
@@ -364,7 +357,6 @@ async function registerDomain(domain, customerId, plan_id) {
             accept: "application/json",
             "Api-Request-Id": requestId,
             "Api-Signature": signature,
-            "Reseller-ID": resellerId,
           },
           body: JSON.stringify({
             domain_name: domain,
