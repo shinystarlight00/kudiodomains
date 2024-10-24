@@ -345,7 +345,6 @@ async function registerDomain(domain, customerId, plan_id) {
         domain_name: domain,
         customer_id: customerId,
         period: 12,
-        privacy: true,
       }),
     });
     const domainData = await domainResponse.json();
