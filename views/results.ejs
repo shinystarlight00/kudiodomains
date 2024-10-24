@@ -13,7 +13,7 @@
 
       .widget {
         text-align: center;
-        max-width: 750px;
+        max-width: 600px;
         width: 90%; /* Adjust to fit within the screen size */
         margin: 0 auto;
         padding: 0;
@@ -81,7 +81,7 @@
       }
 
       .results-container {
-        max-width: 750px;
+        max-width: 600px;
         margin: 0 auto;
         padding: 0;
         display: block;
@@ -182,7 +182,7 @@
       }
 
       .confirmation-container {
-        max-width: 750px;
+        max-width: 600px;
         width: 90%; /* Adjust to fit within the screen size */
         margin: 0 auto;
         padding: 2%;
@@ -229,7 +229,7 @@
         flex-wrap: wrap;
         justify-content: center;
         padding: 4% 3%;
-        max-width: 750px;
+        max-width: 600px;
         margin: 0 auto;
       }
 
@@ -427,7 +427,7 @@
           gap: 10px; /* Reduced gap for mobile view to minimize spacing */
         }
         #registrantForm input {
-          width: 100% !important;
+          width: 100%;
           padding: 5px; /* Reduce padding for mobile view */
         }
       }
@@ -1065,14 +1065,16 @@
                     }),
                   });
 
-                  const { registerStatus, error } = response.json();
-                  if (registerStatus) {
+                  const result = await response.json();
+
+                  console.log(result);
+
+                  if (result.status) {
+                    hideLoader();
                     showSuccessNotification();
-                    hideLoader();
                   } else {
-                    hideContainer("confirmationContainer");
                     hideLoader();
-                    alert("Domain registration failed: ", error);
+                    alert("Domain registration failed: " + result.error);
                   }
                 }
               }

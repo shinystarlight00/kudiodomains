@@ -85,7 +85,7 @@ app.get("/domain-availability", async (req, res) => {
     });
 
     const data = await response.json();
-    // console.log("============> Dreamscape API Response:", data); // Log API response for debugging
+    console.log("============> Dreamscape API Response:", data); // Log API response for debugging
 
     if (data && Array.isArray(data.data)) {
       res.status(200).json({ data: data.data });
@@ -133,12 +133,15 @@ app.post("/create-payment-intent", async (req, res) => {
 app.post("/register-domain", async (req, res) => {
   const { domain, customer_id, plan_id } = req.body;
 
-  const { registerStatus, error } = await registerDomain(
-    domain,
-    customer_id,
-    plan_id
+  const response = await registerDomain(domain, customer_id, plan_id);
+
+  // domainRegisterResult = await response.json();
+  console.log(
+    "===========> register status and error ",
+    response.status,
+    response.error
   );
-  res.json({ registerStatus, error });
+  res.json(response);
 });
 
 app.post("/registrant", async (req, res) => {
@@ -323,13 +326,12 @@ async function registerDomain(domain, customerId, plan_id) {
     domain,
     customerId
   );
-  // const customerId = await registerCustomer(registrantData);
-  // const registrantResult = await createRegistration(registrantData);
+
+  const registerUrl = constants.urls.domainRegister;
+  const emailHostingUrl = constants.urls.emailPackageRegister;
 
   const requestId = generateRequestID();
   const signature = generateSignature(requestId, apiKey);
-  const registerUrl = constants.urls.domainRegister;
-  const emailHostingUrl = constants.urls.emailPackageRegister;
   try {
     const domainResponse = await fetch(registerUrl, {
       method: "POST",
@@ -343,43 +345,67 @@ async function registerDomain(domain, customerId, plan_id) {
         domain_name: domain,
         customer_id: customerId,
         period: 12,
+        privacy: true,
       }),
     });
     const domainData = await domainResponse.json();
     console.log("============> domainData API Response:", domainData); // Log API response for debugging
 
     if (domainData.status && plan_id) {
-      const new_requestId = generateRequestID();
-      const new_signature = generateSignature(requestId, apiKey);
+      if (domainData.data.status_id == 1 || domainData.data.status_id == 2) {
+        const new_requestId = generateRequestID();
+        const new_signature = generateSignature(new_requestId, apiKey);
 
-      try {
-        const emailHostingResponse = await fetch(emailHostingUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            accept: "application/json",
-            "Api-Request-Id": new_requestId,
-            "Api-Signature": new_signature,
-          },
-          body: JSON.stringify({
-            domain_name: domain,
-            plan_id: plan_id,
-            customer_id: customerId,
-            period: 12,
-          }),
-        });
-        const emailHostingData = await emailHostingResponse.json();
         console.log(
-          "============> emailHostingData API Response:",
-          emailHostingData
-        ); // Log API response for debugging
+          "new request ID and signature =========> ",
+          new_requestId,
+          new_signature
+        );
 
-        if (emailHostingData.status === true)
-          return { status: true, error: "" };
-        else return { status: false, error: emailHostingData.error_message };
-      } catch (error) {
-        console.error("Error registering email hosting:", error);
-        return { status: false, error: "Failed to register email hosting" };
+        try {
+          const emailHostingResponse = await fetch(emailHostingUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              accept: "application/json",
+              "Api-Request-Id": new_requestId,
+              "Api-Signature": new_signature,
+            },
+            body: JSON.stringify({
+              domain_name: domain,
+              plan_id: plan_id,
+              customer_id: customerId,
+              period: 12,
+            }),
+          });
+          const emailHostingData = await emailHostingResponse.json();
+          console.log(
+            "============> emailHostingData API Response:",
+            emailHostingData
+          ); // Log API response for debugging
+
+          if (emailHostingData.status === true) {
+            if (
+              emailHostingData.data.status_id == 1 ||
+              emailHostingData.data.status_id == 2
+            ) {
+              return { status: true, error: "" };
+            } else
+              return {
+                status: false,
+                error: "Failed to register email hosting",
+              };
+          } else
+            return { status: false, error: emailHostingData.error_message };
+        } catch (error) {
+          console.error("Error registering email hosting:", error);
+          return { status: false, error: "Failed to register email hosting" };
+        }
+      } else {
+        return {
+          status: false,
+          error: "An error occured in registering domain",
+        };
       }
     } else if (domainData.status === false) {
       return { status: false, error: domainData.error_message };
