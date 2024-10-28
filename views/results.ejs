@@ -664,7 +664,7 @@
       });
       const stripePublicKey = "<%= stripePublicKey %>";
       const stripe = Stripe(stripePublicKey);
-      console.log("===============> stripe public key", stripePublicKey);
+      // console.log("===============> stripe public key", stripePublicKey);
 
       const elements = stripe.elements();
       const cardElement = elements.create("card");

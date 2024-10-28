@@ -392,26 +392,44 @@ async function registerDomain(domain, customerId, plan_id) {
             } else
               return {
                 status: false,
-                error: "Failed to register email hosting",
+                error:
+                  "Succeeded to register domain but Failed to register email hosting. Please confirm if you provide right information.",
               };
           } else
-            return { status: false, error: emailHostingData.error_message };
+            return {
+              status: false,
+              error:
+                "Succeeded to register domain but Failed to register email hosting. " +
+                emailHostingData.error_message,
+            };
         } catch (error) {
           console.error("Error registering email hosting:", error);
-          return { status: false, error: "Failed to register email hosting" };
+          return {
+            status: false,
+            error:
+              "Succeeded to register domain but Failed to register email hosting.",
+          };
         }
       } else {
         return {
           status: false,
-          error: "An error occured in registering domain",
+          error: "An error occured in registering domain and email hosting",
         };
       }
     } else if (domainData.status === false) {
-      return { status: false, error: domainData.error_message };
+      return {
+        status: false,
+        error:
+          "An error occured in registering domain and email hosting " +
+          domainData.error_message,
+      };
     }
   } catch (error) {
     console.error("Error registering domain:", error);
-    return { status: false, error: "Failed to register domain" };
+    return {
+      status: false,
+      error: "Failed to register domain and email hosting",
+    };
   }
 }
 
